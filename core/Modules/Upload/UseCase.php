@@ -6,31 +6,32 @@ require_once 'Gateways/SaveDocumentGateway.php';
 
 class UseCase
 {
+    private DecodeXmlRule $decodeXmlRule;
+    private ValidateCnpjRule $validadeCnpjRule;
+    private ValidateUfRule $validadeUfRule;
+    private SendToXmlIngestorRule $sendToXmlIngestorRule;
+    private SaveDocumentRule $saveDocument;
 
-    private IngestXmlGateway $ingestXmlGateway;
-    private SaveDocumentGateway $saveDocumentGateway;
     public function __construct(IngestXmlGateway $ingestXmlGateway, SaveDocumentGateway $saveDocumentGateway)
     {
-        $this->ingestXmlGateway = $ingestXmlGateway;
-        $this->saveDocumentGateway = $saveDocumentGateway;
+        
+        $this->decodeXmlRule = new DecodeXmlRule;
+        $this->validadeCnpjRule = new ValidateCnpjRule;
+        $this->validadeUfRule = new ValidateUfRule;
+        $this->sendToXmlIngestorRule = new SendToXmlIngestorRule($ingestXmlGateway);
+        $this->saveDocument = new SaveDocumentRule($saveDocumentGateway);
     }
     
     public function execute(): void
     {
-        $decodeXmlRule = new DecodeXmlRule;
-        $document = $decodeXmlRule->apply('xml');
         
-        $validadeCnpjRule = new ValidateCnpjRule;
-        $validadeCnpjRule->apply($document,'cnpj');
 
-        $validadeUfRule = new ValidateUfRule;
-        $validadeUfRule->apply($document,'uf');
-
-        $sendToXmlIngestorRule = new SendToXmlIngestorRule($this->ingestXmlGateway);
-        $sendToXmlIngestorRule->apply($document);
-
-        $saveDocument = new SaveDocumentRule($this->saveDocumentGateway);
-        $saveDocument->apply($document);
+        
+        $document = $this->decodeXmlRule->apply('xml');
+        $this->validadeCnpjRule->apply($document,'cnpj');
+        $this->validadeUfRule->apply($document,'uf');
+        $this->sendToXmlIngestorRule->apply($document);
+        $this->saveDocument->apply($document);
     }
 }
 

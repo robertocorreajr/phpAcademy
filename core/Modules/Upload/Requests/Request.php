@@ -1,19 +1,25 @@
 <?php
 
-class Document
+class Request
 {
+    
+    private string $xml;
     private string $cnpj;
     private string $uf;
     private string $type;
-    private string $accessKey;
 
-    public function __construct(string $cnpj, string $uf, string $type, string $accessKey)
+    public function __construct(string $xml, string $cnpj, string $uf, string $type)
     {
+        $this->xml = $xml;
         $this->cnpj = $cnpj;
         $this->uf = $uf;
         $this->type = $type;
-        $this->accessKey = $accessKey;
-    }    
+    }
+
+    public function getXml()
+    {
+        return $this->xml;
+    }
 
     public function getCnpj()
     {
@@ -29,11 +35,4 @@ class Document
     {
         return $this->type;
     }
-
-    public function getAccessKey()
-    {
-        return $this->accessKey;
-    }
 }
-
-?>

@@ -13,11 +13,7 @@ class SendToXmlIngestorRule
 
     public function apply(Document $document): void
     {
-        try {
             $this->ingestXml->ingestXml($document);
-        } catch (\Throwable $th) {
-            throw new Exception("IngestionException: Ocorreu algum problema ao solicitar a ingestão do XML. Favor tentar novamente");
-        }
     }
 }
 
